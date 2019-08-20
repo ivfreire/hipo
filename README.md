@@ -20,5 +20,13 @@ $ gcc hipoc.c -o hipoc -I"./"
 
 Logo em seguida, executar o arquivo de saída, onde o primeiro parâmetro é o caminho do arquivo .hip no seu computador a partir do diretório onde o executável está.
 
-## Uso
+```
+$ ./hipoc [.HIP FILE]
+```
 
+## Começando
+
+O HIPO usa uma sintaxe parecida com o Assembler, porém menos complexa e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
+
+
+Mais informações podem ser encontradas em: <a href="https://www.ime.usp.br/~jstern/software/hipo/Hipo.pdf"></a>
