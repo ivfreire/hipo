@@ -34,6 +34,19 @@ O interpetrador inicia um array de inteiros com 100 posições para emular a mem
 ```
 Onde II representa o código de uma instrução e EE representa o endereço de memória como parâmetro para a instrução II.
 O interpretador tem um cache de processamento de um byte. 
+A estrutura da memória pode ser representada por:
+```
+ENDEREÇO    CONTEÚDO    COMANDO
+00          +3180       LER 80
+01          +4180       IMP 80
+02          +7000       PAR
+03          +0000
+...
+97          +0000
+98          +0000
+99          +0000
+```
+O interpretador possui um API - Apontador de instrções - que executa o program de maneira linear.
 
 ### Sintaxe
 
