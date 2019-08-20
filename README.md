@@ -29,4 +29,4 @@ $ ./hipoc [.HIP FILE]
 O HIPO usa uma sintaxe parecida com o Assembler, porém menos complexa e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
 
 
-Mais informações podem ser encontradas em: <a href="https://www.ime.usp.br/~jstern/software/hipo/Hipo.pdf"></a>
+Mais informações podem ser encontradas em: <a href="https://www.ime.usp.br/~jstern/software/hipo/Hipo.pdf">HIPO IME</a>
