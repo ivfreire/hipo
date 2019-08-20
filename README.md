@@ -26,7 +26,40 @@ $ ./hipoc [.HIP FILE]
 
 ## Começando
 
-O HIPO usa uma sintaxe parecida com o Assembler, porém menos complexa e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
+### Estrutura
 
+O interpetrador inicia um array de inteiros com 100 posições para emular a memória de um computador real. Cada endereço de memória armazena um número de -9999 a +9999 podendo este conteúdo ser uma instrução ou um dado armazenado. Em cada endereço temos a estrutura de
+```
++IIEE
+```
+Onde II representa o código de uma instrução e EE representa o endereço de memória como parâmetro para a instrução II.
+O interpretador tem um cache de processamento de um byte. 
+
+### Sintaxe
+
+O HIPO usa uma sintaxe parecida com o Assembler, porém menos complexa e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
+A tabela abaixo fornece uma relação dos comandos mais usados do interpretador:
+
+```
+NOME    CÓDIGO  DESCRIÇÃO
+CEA     11      Copia o conteúdo do endereço de memória especificado para o acumulador.
+CAE     12      Copia o conteúdo do acumulador para o endereço de memória especificado.
+SOM     21      Soma o conteúdo do acumulador com o do endereço de memória especificado.
+SUB     22      Subtrae o conteúdo do acumulador com o do endereço de memória especificado.
+MUL     23      Multiplica o conteúdo do acumulador com o do endereço de memória especificado.
+DIV     24      Divide o conteúdo do acumulador com o do endereço de memória especificado.
+```
+
+O código deve ser redigido em letras maiúsculas com um codinome de três caracteres e um número de 0 a 99 que especificam o parâmetro para a instrução. Abaixo temos o exemplo de um programa que armazena o número lido do teclado em um endereço de memória e mostra que número o usuário digitou:
+
+```
+LER 80
+IMP 80
+PAR
+```
+
+Todo código .hip deve terminar com o comando PAR para finalizar a execução do programa.
+
+### Informações
 
 Mais informações podem ser encontradas em: <a href="https://www.ime.usp.br/~jstern/software/hipo/Hipo.pdf">HIPO IME</a>
