@@ -5,65 +5,79 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LEI(ID) (100 + ID)  // Armazena input do usuário no endereço especificado.
-#define IMP 200             // Imprime na tela o valor do endeteço especificado.
-#define CGA(ID) (300 + ID)  // Carrega valor do endereço especificado para o cache.
-#define CAG(ID) (400 + ID)  // Carrega valor do cache para o endereço especificado.
-#define SOM(ID) (500 + ID)  // Soma valor do endereço especificado com o cache.
-#define DES(ID) (600 + ID)  // Desvia o API para o endereço especificado.
-#define DEZ(ID) (700 + ID)  // Desvia condicionalmente o API para o endereço especificado (se cache for igual a 0).
-#define FIM 800             // Finaliza a execução do programa.
-
 #define HIPO_DEFAULT                0   // Carrega a memória virgem (sem instruções).
 #define HIPO_APP_BASIC_SUM          1   // Carrega um programa de soma básica de dois números na memória.
 #define HIPO_APP_SEQ_SUM            2   // Carrega um programa para soma de uma sequência numérica terminada em 0 na memória.
 #define HIPO_APP_BASIC_QUAD_MULT    3   // Carrega um program que multiplica o input do usuário por 4 se este for diferente de 0.
 
-void HIPO_Init(int program);
+void HIPO_Init();
+void HIPO_Run();
+void HIPO_LoadFile(char* path);
 void HIPO_ReadAPI();
 void HIPO_ReadInstruction();
-void HIPO_Run();
-void HIPO_LoadProgram(int id);
 void HIPO_Quit();
-void lei(int addr);
-void imp();
-void cga(int addr);
-void cag(int addr);
+
+void cea(int addr);
+void cae(int addr);
 void som(int addr);
+void sub(int addr);
+void mul(int addr);
+void _div(int addr);
+void mod(int addr);
+void ler(int addr);
+void imp(int addr);
+void nop();
 void des(int addr);
-void dez(int addr);
-void fim();
+void dpo(int addr);
+void dpz(int addr);
+void dne(int addr);
+void dnz(int addr);
+void ddz(int addr);
+void dzz(int addr);
+void ade();
+void add();
+void par();
 
 int memory[99];
 int cache;
-int* api, index;
+int* api, _index;
 int running;
 
-/*
-    ÍNDICE DAS INSTRUÇÕES
-    NOME    ID      STATUS  DESCRIÇÃO
-    LEI     01      fatto   Lê input do teclado.
-    IMP     02      fatto   Imprime o valor de uma gaveta na tela.
-    CGA     03      fatto   Carrega da gaveta para o cache.
-    CAG     04      fatto   Carrega do cache para a gaveta.
-    SOM     05      fatto   Soma a gaveta com o cache.
-    DES     06      fatto   Desvia o API para outro endereço.
-    DEZ     07      fatto   Desvia o API se o cache é 0.
-    FIM     08      fatto   Finaliza o código.
+/*  
+    NOME    CÓDIGO  DESCRIÇÃO
+    CEA     11
+    CAE     12
+    SOM     21
+    SUB     22
+    MUL     23
+    DIV     24
+    MOD     25
+    LER     31
+    IMP     41
+    NOP     50
+    DES     51
+    DPO     52
+    DPZ     53
+    DNE     54
+    DNZ     55
+    DDZ     56
+    DZZ     57
+    ADE     61
+    ADD     62
+    PAR     70
 */
 
 // Inicializa a memória do HIPO, o cache do processador e o API.
-void HIPO_Init(int program) {
+void HIPO_Init() {
     for (int i = 0; i < 100; i++) memory[i] = 0;
-    cache   = 0;
+    cache   = 0; _index  = 0;
     printf("HIPO: POWER ON\n");
-    if (program != 0) HIPO_LoadProgram(program);
 }
 
 // Roda as instruções a partir do endereço especificado.
 void HIPO_Run(int addr) {
-    index   = addr;
-    api     = &memory[index];
+    _index   = addr;
+    api     = &memory[_index];
     running = 1;
     while (running == 1) HIPO_ReadAPI();
 }
@@ -71,62 +85,35 @@ void HIPO_Run(int addr) {
 // Passa próxima instrução para o API.
 void HIPO_ReadAPI() {
     HIPO_ReadInstruction();
-    index++;
-    api = &memory[index];
+    _index++;
+    api = &memory[_index];
 }
 
 // Lê instrução armazenada onde o API aponta.
 void HIPO_ReadInstruction() {
     int id      = (int)(*api / 100);
     int operand = *api - id * 100;
-    if (id == 0) fim();
-    if (id == 1) lei(operand);
-    if (id == 2) imp(operand);
-    if (id == 3) cga(operand);
-    if (id == 4) cag(operand);
-    if (id == 5) som(operand);
-    if (id == 6) des(operand);
-    if (id == 7) dez(operand);
-    if (id == 8) fim();
-}
-
-// Carrega um programa pré-programado na memória do HIPO.
-void HIPO_LoadProgram(int id) {
-    if (id == HIPO_APP_BASIC_SUM) {
-        memory[0] = 180;    // LEI 80
-        memory[1] = 181;    // LEI 81
-        memory[2] = 380;    // CGA 80
-        memory[3] = 581;    // SOM 81
-        memory[4] = 481;    // CAG 81
-        memory[5] = 281;    // IMP
-        memory[6] = 800;    // FIM
-        printf("HIPO: BASIC_SUM loaded.\n");
-    }
-    if (id == HIPO_APP_SEQ_SUM) {
-        memory[0] = 180;    // LEI 80
-        memory[1] = 380;    // CGA 80
-        memory[2] = 707;    // DEZ 07
-        memory[3] = 381;    // CGA 81
-        memory[4] = 580;    // SOM 80
-        memory[5] = 481;    // CAG 81
-        memory[6] = 600;    // DES 00
-        memory[7] = 281;    // IMP 81
-        memory[8] = 800;    // FIM
-        printf("HIPO: SEQ_SUM loaded.\n");
-    }
-    if (id == HIPO_APP_BASIC_QUAD_MULT) {
-        memory[0] = 110;    // LEI 10
-        memory[1] = 310;    // CGA 10
-        memory[2] = 707;    // DEZ 07
-        memory[3] = 510;    // SOM 10
-        memory[4] = 510;    // SOM 10
-        memory[5] = 510;    // SOM 10
-        memory[6] = 410;    // CAG 10
-        memory[7] = 210;    // IMP 10
-        memory[8] = 800;    // FIM
-        printf("HIPO: QUAD_MULT loaded.\n");
-    }
-
+    if (id ==  0) par();
+    if (id == 11) cea(operand);
+    if (id == 12) cae(operand);
+    if (id == 21) som(operand);
+    if (id == 22) sub(operand);
+    if (id == 23) mul(operand);
+    if (id == 24) _div(operand);
+    if (id == 25) mod(operand);
+    if (id == 31) ler(operand);
+    if (id == 41) imp(operand);
+    if (id == 50) nop();
+    if (id == 51) des(operand);
+    if (id == 52) dpo(operand);
+    if (id == 53) dpz(operand);
+    if (id == 54) dne(operand);
+    if (id == 55) dnz(operand);
+    if (id == 56) ddz(operand);
+    if (id == 57) dzz(operand);
+    if (id == 61) ade(operand);
+    if (id == 62) add(operand);
+    if (id == 70) par();
 }
 
 // Libera a memória utilizada pela biblioteca.
@@ -136,57 +123,62 @@ void HIPO_Quit() {
 
 // MÉTODOS DO COMPILADOR
 
+// Transforma os comandos de alto nível para instruções numéricas.
 int HIPO_Encode(char cmd[10], char op[10]) {
     int _op = atoi(op);
-    if (strcmp(cmd, "LEI") == 0) return 100 + _op;
-    if (strcmp(cmd, "IMP") == 0) return 200 + _op;
-    if (strcmp(cmd, "CGA") == 0) return 300 + _op;
-    if (strcmp(cmd, "CAG") == 0) return 400 + _op;
-    if (strcmp(cmd, "SOM") == 0) return 500 + _op;
-    if (strcmp(cmd, "DES") == 0) return 600 + _op;
-    if (strcmp(cmd, "DEZ") == 0) return 700 + _op;
-    if (strcmp(cmd, "FIM") == 0) return 800 + _op;
+    if (strcmp(cmd, "CEA") == 0) return 1100 + _op;
+    if (strcmp(cmd, "CAE") == 0) return 1200 + _op;
+    if (strcmp(cmd, "SOM") == 0) return 2100 + _op;
+    if (strcmp(cmd, "SUB") == 0) return 2200 + _op;
+    if (strcmp(cmd, "MUL") == 0) return 2300 + _op;
+    if (strcmp(cmd, "DIV") == 0) return 2400 + _op;
+    if (strcmp(cmd, "MOD") == 0) return 2500 + _op;
+    if (strcmp(cmd, "LER") == 0) return 3100 + _op;
+    if (strcmp(cmd, "IMP") == 0) return 4100 + _op;
+    if (strcmp(cmd, "NOP") == 0) return 5000 + _op;
+    if (strcmp(cmd, "DES") == 0) return 5100 + _op;
+    if (strcmp(cmd, "DPO") == 0) return 5200 + _op;
+    if (strcmp(cmd, "DPZ") == 0) return 5300 + _op;
+    if (strcmp(cmd, "DNE") == 0) return 5400 + _op;
+    if (strcmp(cmd, "DNZ") == 0) return 5500 + _op;
+    if (strcmp(cmd, "DDZ") == 0) return 5600 + _op;
+    if (strcmp(cmd, "DZZ") == 0) return 5700 + _op;
+    if (strcmp(cmd, "ADE") == 0) return 6100 + _op;
+    if (strcmp(cmd, "ADD") == 0) return 6200 + _op;
+    if (strcmp(cmd, "PAR") == 0) return 7000 + _op;
     return 0;
 }
 
-void HIPO_LoadFile(const char* path) {
+// Carrega um arquivo .hip para interpretar.
+void HIPO_LoadFile(char* path) {
     FILE *source;
     source = fopen(path, "r");
-    char string[10], cmd[10], op[10]; int m_index = 0;
-    while (strcmp(string, "FIM") != 0) {
-        strcpy(cmd, ""); strcpy(op, "");
-        fscanf(source, "%s", string);
-        strcpy(cmd, string);
-        if (strcmp(cmd, "FIM") != 0) {
+    if (source != NULL) {
+        char string[10], cmd[10], op[10]; int m__index = 0;
+        while (strcmp(string, "PAR") != 0) {
+            strcpy(cmd, ""); strcpy(op, "");
             fscanf(source, "%s", string);
-            strcpy(op, string);
+            strcpy(cmd, string);
+            if (strcmp(cmd, "FIM") != 0) {
+                fscanf(source, "%s", string);
+                strcpy(op, string);
+            }
+            memory[m__index] = HIPO_Encode(cmd, op);
+            m__index++;
         }
-        memory[m_index] = HIPO_Encode(cmd, op);
-        m_index++;
     }
     fclose(source);
 }
 
 // INSTRUÇÕES DO INTERPRETADOR
 
-// Lê input numérico do usuário e armazena no endereço de memória indicado.
-void lei(int addr) {
-    printf("INPUT: ");
-    scanf("%d", &memory[addr]);
-}
-
-// Imprime o valor do cache na tela.
-void imp(int addr) {
-    printf("M[%d]: %d\n", addr, memory[addr]);
-}
-
-// Carrega dado do endereço de memória especificado para o cache do processador.
-void cga(int addr) {
+// Carrega valor do endereço de memória especificado para o acumulador.
+void cea(int addr) {
     cache = memory[addr];
 }
 
-// Carrega dado do cache do processador para o endereço de memória especificado.
-void cag(int addr) {
+// Carrega valor do acumulador para o endereço de memória especificado.
+void cae(int addr) {
     memory[addr] = cache;
 }
 
@@ -195,18 +187,89 @@ void som(int addr) {
     cache += memory[addr];
 }
 
+// Subtrai o conteúdo do endereço de memória especificado do acumulador e armazena o resultado no acumulador.
+void sub(int addr) {
+    cache -= memory[addr];
+}
+
+// Multiplica o conteúdo do endereço de memória especificado com o conteúdo do acumulador e armazena o resultado no acumulador.
+void mul(int addr) {
+    cache = cache * memory[addr];
+}
+
+// Divide o conteúdo do acumulador pelo conteúdo do endereço de memória especificado e armazena o resultado no acumulador.
+void _div(int addr) {
+    cache = (int)(cache / memory[addr]);
+}
+
+// O acumulador recebe o resto da divisão do valor do acumulador pelo valor do endereço de memória especificado.
+void mod(int addr) {
+    cache = cache % memory[addr];
+}
+
+// Lê o teclado e armazena o valor lido no endereço de memória especificado.
+void ler(int addr) {
+    printf("INPUT: ");
+    scanf("%d", &memory[addr]);
+}
+
+// Escreve valor do endereço de memória especificado na tela.
+void imp(int addr) {
+    printf("[M%d]: %d\n", addr, memory[addr]);
+}
+
+// Faz nada.
+void nop() {
+
+}
+
 // Desvia o API para o endereço de memória especificado.
 void des(int addr) {
-    index   = addr - 1;
+    _index   = addr - 1;
 }
 
-// Desvia o API para o endereço de memória especificado se 
-void dez(int addr) {
-    if (cache == 0) index   = addr - 1;
+// Se o conteúdo do acumulador for maior que 0, desloca o API para o endereço de memória espeficado.
+void dpo(int addr) {
+    if (cache > 0) _index = addr - 1;
 }
 
-// Finaliza a execução do programa.
-void fim() {
+// Se o conteúdo do acumulador for igual ou maior que 0, desloca o API para o endereço de memória espeficado.
+void dpz(int addr) {
+    if (cache >= 0) _index = addr - 1;
+}
+
+// Se o conteúdo do acumulador for menor que 0, desloca o API para o endereço de memória espeficado.
+void dne(int addr) {
+    if (cache < 0) _index = addr - 1;
+}
+
+// Se o conteúdo do acumulador for igual ou menor que 0, desloca o API para o endereço de memória espeficado.
+void dnz(int addr) {
+    if (cache <= 0) _index = addr - 1;
+}
+
+// Se o conteúdo do acumulador for diferente de 0, desloca o API para o endereço de memória espeficado.
+void ddz(int addr) {
+    if (cache != 0) _index = addr - 1;
+}
+
+// Se o conteúdo do acumulador for 0, desloca o API para o endereço de memória espeficado.
+void dzz(int addr) {
+    if (cache == 0) _index = addr - 1;
+}
+
+// Desloca o conteúdo do acumulador uma posição para a esquerda, desprezando o dígito mais significativo.
+void ade() {
+    cache = cache * 10;
+}
+
+// Desloca o conteúdo do acumulador uma posição para a direita, desprezando o dígito menos significativo.
+void add() {
+    cache = (int)(cache / 10);
+}
+
+void par() {
+    _index  = -1;
     running = 0;
 }
 
