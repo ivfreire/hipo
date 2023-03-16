@@ -1,6 +1,6 @@
 # HIPO
 
-O HIPO é um computador hipotético criado para ensinar computação básica à leigos em tecnologia. O sistema funciona emulando a maneira como um computador real funciona, com memória virtual de 100 bytes, e usando uma linguagem semelhante ao Assembler.
+O HIPO é um computador hipotético criado parao  ensino de computação básica para alunos de graduação. O sistema funciona emulando a maneira como um computador real funciona, com memória virtual de 100 bytes, e usando uma linguagem semelhante ao Assembly, porém mais simples.
 
 ## Biblioteca
 
@@ -12,13 +12,13 @@ $ gcc [INPUT FILES] -o [OUTPUT FILE] -I"[IncludePath]"
 
 ## Interpretador
 
-A versão mais útil do projeto é o interpretador, este pode ser usado para interpretar o código HIPO contido em arquivos .hip. Para usar-lo, basta compilar o arquivo hipoc.c
+O **HIPO** funciona como um interpretador de código. Para compilar o intepretador usando `gcc`, basta executar  comando abaixo no terminal. O interpretador será criado como um arquivo executável `hipoc`.
 
 ```
 $ gcc hipoc.c -o hipoc -I"./"
 ```
 
-Logo em seguida, executar o arquivo de saída, onde o primeiro parâmetro é o caminho do arquivo .hip no seu computador a partir do diretório onde o executável está.
+Para interpretar uma sequência de instruções, presente em um arquivo `.hip`, adicione o *path* do arquivo como o segundo parâmetro da linha de comando.
 
 ```
 $ ./hipoc [.HIP FILE]
@@ -50,7 +50,7 @@ O interpretador possui um API - Apontador de instrções - que executa o program
 
 ### Sintaxe
 
-O HIPO usa uma sintaxe parecida com o Assembler, porém menos complexa e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
+O HIPO usa uma sintaxe parecida com o Assembly, porém mais simples e mais intuitiva para o usuário. Todos os comandos são abreviações da língua portuguesa.
 A tabela abaixo fornece uma relação dos comandos mais usados do interpretador:
 
 ```
